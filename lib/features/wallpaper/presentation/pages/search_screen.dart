@@ -46,73 +46,76 @@ class SearchScreen extends StatelessWidget {
                 ),
               ),
             ),
-            BlocBuilder<ImagesBloc, ImagesState>(builder: (context, state) {
-              if (state is LoadingImagesState) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (state is LoadedImagesState) {
-                var images = context.read<ImagesBloc>().searchList;
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child:
-                      // PagewiseGridView.count(
-                      //   pageSize: 10,
-                      //   crossAxisCount: 2,
-                      //   mainAxisSpacing: 10.0,
-                      //   crossAxisSpacing: 10.0,
-                      //   childAspectRatio: 0.555,
-                      //   padding: const EdgeInsets.all(15.0),
-                      //   itemBuilder: (context, entry, index) {
-                      //     return RoundedImageCard(
-                      //       imageUrl: ApiConstants.imageUrl(
-                      //         state.imagesData[index].secret,
-                      //         state.imagesData[index].server,
-                      //         state.imagesData[index].id,
-                      //       ),
-                      //       title: state.imagesData[index].title,
-                      //     );
-                      //   },
-                      //   pageFuture: (pageIndex) async {
-                      //     sl<ImagesBloc>()
-                      //         .add(GetRecentImagesNextPageEvent(pageIndex: pageIndex!-1));
-                      //     return state.imagesData;
-                      //   },
-                      // )
-                      GridView.builder(
-                    controller: context.read<ImagesBloc>().scrollController,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 2 / 3,
-                      crossAxisSpacing: 10.0,
-                      mainAxisSpacing: 10.0,
+            Expanded(
+              child: BlocBuilder<ImagesBloc, ImagesState>(
+                  builder: (context, state) {
+                if (state is LoadingImagesState) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (state is LoadedImagesState) {
+                  var images = context.read<ImagesBloc>().searchList;
+                  return Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child:
+                        // PagewiseGridView.count(
+                        //   pageSize: 10,
+                        //   crossAxisCount: 2,
+                        //   mainAxisSpacing: 10.0,
+                        //   crossAxisSpacing: 10.0,
+                        //   childAspectRatio: 0.555,
+                        //   padding: const EdgeInsets.all(15.0),
+                        //   itemBuilder: (context, entry, index) {
+                        //     return RoundedImageCard(
+                        //       imageUrl: ApiConstants.imageUrl(
+                        //         state.imagesData[index].secret,
+                        //         state.imagesData[index].server,
+                        //         state.imagesData[index].id,
+                        //       ),
+                        //       title: state.imagesData[index].title,
+                        //     );
+                        //   },
+                        //   pageFuture: (pageIndex) async {
+                        //     sl<ImagesBloc>()
+                        //         .add(GetRecentImagesNextPageEvent(pageIndex: pageIndex!-1));
+                        //     return state.imagesData;
+                        //   },
+                        // )
+                        GridView.builder(
+                      controller: context.read<ImagesBloc>().scrollController,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 2 / 3,
+                        crossAxisSpacing: 10.0,
+                        mainAxisSpacing: 10.0,
+                      ),
+                      itemBuilder: (context, index) {
+                        if (index >= images.length) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else {
+                          return RoundedImageCard(
+                            imageUrl: ApiConstants.imageUrl(
+                              images[index].secret,
+                              images[index].server,
+                              images[index].id,
+                            ),
+                            title: images[index].title,
+                          );
+                        }
+                      },
+                      itemCount: context.read<ImagesBloc>().isLoadingMore
+                          ? images.length + 1
+                          : images.length,
                     ),
-                    itemBuilder: (context, index) {
-                      if (index >= images.length) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else {
-                        return RoundedImageCard(
-                          imageUrl: ApiConstants.imageUrl(
-                            images[index].secret,
-                            images[index].server,
-                            images[index].id,
-                          ),
-                          title: images[index].title,
-                        );
-                      }
-                    },
-                    itemCount: context.read<ImagesBloc>().isLoadingMore
-                        ? images.length + 1
-                        : images.length,
-                  ),
-                );
-              } else {
-                return const Center(child: Text('Error'));
-              }
-            })
+                  );
+                } else {
+                  return const Center(child: Text('Error'));
+                }
+              }),
+            )
           ],
         ),
       ),
