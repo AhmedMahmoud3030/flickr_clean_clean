@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../widgets/image_card.dart';
+import '../widgets/my_drawer.dart';
+import 'image_view.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -12,39 +14,58 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        drawer: const MyDrawer(),
         body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                onChanged: (value) => context
-                    .read<ImagesBloc>()
-                    .add(SearchRecentImagesEvent(query: value)),
-                style: const TextStyle(color: Colors.black, fontSize: 14),
-                decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                  hintText: 'Search',
-                  hintStyle: const TextStyle(color: Colors.black),
-                  prefixIcon: const Icon(
+            Row(
+              children: [
+                const SizedBox(
+                  width: 10,
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: const Icon(
                     Icons.search,
                     color: Colors.black,
                     size: 20,
                   ),
-                  filled: true,
-                  fillColor: Colors.white12,
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        BorderSide(color: Colors.black.withOpacity(0.7)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide:
-                        BorderSide(color: Colors.black.withOpacity(0.7)),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    onChanged: (value) => context
+                        .read<ImagesBloc>()
+                        .add(SearchRecentImagesEvent(query: value)),
+                    style: const TextStyle(color: Colors.black, fontSize: 14),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 5),
+                      hintText: 'Search',
+                      hintStyle: const TextStyle(color: Colors.black),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Colors.black,
+                        size: 20,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white12,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide:
+                            BorderSide(color: Colors.black.withOpacity(0.7)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide:
+                            BorderSide(color: Colors.black.withOpacity(0.7)),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
             Expanded(
               child: BlocBuilder<ImagesBloc, ImagesState>(
@@ -96,13 +117,23 @@ class SearchScreen extends StatelessWidget {
                             child: CircularProgressIndicator(),
                           );
                         } else {
-                          return RoundedImageCard(
-                            imageUrl: ApiConstants.imageUrl(
-                              images[index].secret,
-                              images[index].server,
-                              images[index].id,
+                          return GestureDetector(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageView(
+                                  image: images[index],
+                                ),
+                              ),
                             ),
-                            title: images[index].title,
+                            child: RoundedImageCard(
+                              imageUrl: ApiConstants.imageUrl(
+                                images[index].secret,
+                                images[index].server,
+                                images[index].id,
+                              ),
+                              title: images[index].title,
+                            ),
                           );
                         }
                       },

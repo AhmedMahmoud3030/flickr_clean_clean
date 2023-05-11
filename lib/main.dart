@@ -21,10 +21,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => di.sl<ImagesBloc>()..add(GetRecentImagesEvent()),
-      child:  MaterialApp(
+      child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: HomePage(),
-
       ),
     );
     // return MultiBlocProvider(

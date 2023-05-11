@@ -1,5 +1,7 @@
+import 'package:flickr_clean/features/wallpaper/presentation/pages/image_view.dart';
 import 'package:flickr_clean/features/wallpaper/presentation/pages/search_screen.dart';
 import 'package:flickr_clean/features/wallpaper/presentation/widgets/image_card.dart';
+import 'package:flickr_clean/features/wallpaper/presentation/widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,6 +14,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const MyDrawer(),
       appBar: AppBar(
           backgroundColor: Colors.transparent,
           title: RichText(
@@ -35,7 +38,7 @@ class HomePage extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => const SearchScreen())),
               child: Container(
-                height: 80,
+                height: 50,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(
@@ -45,13 +48,17 @@ class HomePage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(width: 10,),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     Icon(
                       Icons.search,
                       color: Colors.black.withOpacity(0.7),
                       size: 20,
                     ),
-                    SizedBox(width: 10,),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     Text(
                       'Search',
                       style: TextStyle(
@@ -123,13 +130,23 @@ class _bodyBuilder extends StatelessWidget {
                       child: CircularProgressIndicator(),
                     );
                   } else {
-                    return RoundedImageCard(
-                      imageUrl: ApiConstants.imageUrl(
-                        images[index].secret,
-                        images[index].server,
-                        images[index].id,
+                    return GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageView(
+                            image: images[index],
+                          ),
+                        ),
                       ),
-                      title: images[index].title,
+                      child: RoundedImageCard(
+                        imageUrl: ApiConstants.imageUrl(
+                          images[index].secret,
+                          images[index].server,
+                          images[index].id,
+                        ),
+                        title: images[index].title,
+                      ),
                     );
                   }
                 },
